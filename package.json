@@ -1,0 +1,26 @@
+{
+  "name": "coding-challenge",
+  "version": "1.0.0",
+  "description": "coding challenge for henry meds",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidhope/coding-challenge.git"
+  },
+  "author": "david hope",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidhope/coding-challenge/issues"
+  },
+  "homepage": "https://github.com/davidhope/coding-challenge#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "jest": "^29.6.4"
+  }
+}
