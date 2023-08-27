@@ -1,5 +1,5 @@
 
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3');
 
 function connect(callback) { 
 
@@ -24,7 +24,7 @@ function close(db){
   });
 }
 
-function init(db){
+function init(db, callback){
 
   let providersSql = ' \
                          CREATE TABLE Providers ( \
@@ -37,32 +37,32 @@ function init(db){
 
   let clientsSql = ' \
                         CREATE TABLE Clients( \
-                        ClientId INTEGER PRIMARY KEY,\
-                        FirstName TEXT NOT NULL,\
-                        LastName TEXT NOT NULL,\
-                        Email TEXT NOT NULL,\
-                        Phone TEXT NOT NULL \
+                          ClientId INTEGER PRIMARY KEY,\
+                          FirstName TEXT NOT NULL,\
+                          LastName TEXT NOT NULL,\
+                          Email TEXT NOT NULL,\
+                          Phone TEXT NOT NULL \
                       );';
 
   let AppointmentsSql = ' \
                       CREATE TABLE Appointments( \
-                      AppointmentId INTEGER PRIMARY KEY,\
-                      ProviderId INTEGER NOT NULL,\
-                      ClientId INTEGER NOT NULL,\
-                      StartTime TEXT NOT NULL,\
-                      Created TEXT DEFAULT CURRENT_TIMESTAMP,\
-                      Confirmed INTEGER \
+                        AppointmentId INTEGER PRIMARY KEY,\
+                        ProviderId INTEGER NOT NULL,\
+                        ClientId INTEGER NOT NULL,\
+                        StartTime TEXT NOT NULL,\
+                        Created TEXT DEFAULT CURRENT_TIMESTAMP,\
+                        Confirmed INTEGER \
                     );';
 
   let SchedulesSql = ' \
                     CREATE TABLE Schedules( \
-                    ScheduleId INTEGER PRIMARY KEY,\
-                    ProviderId INTEGER NOT NULL,\
-                    StartTime TEXT NOT NULL,\
-                    Duration INTEGER NOT NULL \
+                      ScheduleId INTEGER PRIMARY KEY,\
+                      ProviderId INTEGER NOT NULL,\
+                      StartTime TEXT NOT NULL,\
+                      Duration INTEGER NOT NULL \
                   );';                
 
-  let provisionStatements = [providersSql, clientsSql, AppointmentsSql, SchedulesSql];
+  let provisionStatements = [providersSql];//, clientsSql, AppointmentsSql, SchedulesSql];
 
   provisionStatements.map((provsql) => {
     run(db, provsql, (err) => {
@@ -71,19 +71,19 @@ function init(db){
         return err;
       }
     });
-
-    
   });
+
+  callback;
 }
 
-function provision(db){
+function provision(db, callback){
   let providerInsert = 'insert into Providers(FirstName, LastName, Email, Phone) VALUES("provider", "smith", "smith@gmail.com", "5555555555")';
   let clientInsert = 'insert into Clients(FirstName, LastName, Email, Phone) VALUES("client", "jones", "jones@gmail.com", "9999999999")';
   let scheduleInsert = '\
                           INSERT INTO Schedules (ProviderId,StartTime, Duration) \
                           VALUES( 1, "2023-08-13 08:00", 7); \
                         ';
-  let populateStatements = [providerInsert, clientInsert, scheduleInsert];
+  let populateStatements = [providerInsert];//, clientInsert, scheduleInsert];
   populateStatements.map((popsql) => {
     run(db, popsql, (err) => {
       if(err){
@@ -92,6 +92,8 @@ function provision(db){
       }
     });
   });
+
+  callback;
 }
 
 function run(db, sql){
@@ -103,7 +105,7 @@ function run(db, sql){
   });
 }
 
-function query(db, sql){
+function query(db, sql, params){
   db.all(sql,params,(err, rows ) => {
     if(err){
       console.error(err.message);
@@ -112,6 +114,8 @@ function query(db, sql){
     return rows;
   });
 }
+
+
 
 module.exports = { 
   connect,
